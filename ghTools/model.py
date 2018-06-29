@@ -21,14 +21,19 @@ class Model:
         # cursor.close()
         # self.cnx.close()
 
-    def select_ambient(self, query: str):
+    def select_ambient(self, sensor, days):
+        query = """
+                SELECT sensor, date, temp, humi
+                FROM sensor{}_per_hour
+                LIMIT {}
+                """.format(sensor, 24 * days)
         result_set = []
         self.cursor.execute(query=query)
-        for (sensor, date, tempe, humi) in self.cursor:
+        for (sensor, date, temp, humi) in self.cursor:
             ambient = Ambient()
             ambient.sensor = sensor
             ambient.date = date
-            ambient.temperature = tempe
+            ambient.temperature = temp
             ambient.humidity = humi
             result_set.append(ambient)
 
@@ -40,12 +45,10 @@ class Model:
 
 if __name__ == "__main__":
     model = Model()
-    query = """
-                SELECT *
-                FROM ambient_data
-                LIMIT 5
-                """
-    rs = model.select_ambient(query)
-    print('len of: {}'.format(len(rs)))
-    for ambient in rs:
-        ambient.print()
+    # rs = model.select_ambient(query)
+    # print('len of: {}'.format(len(rs)))
+    # for ambient in rs:
+    #     ambient.print()
+    rs = model.select_ambient(1,1)
+    print(rs)
+
