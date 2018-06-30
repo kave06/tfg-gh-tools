@@ -30,12 +30,20 @@ class Model:
         result_set = []
         self.cursor.execute(query=query)
         for (sensor, date, temp, humi) in self.cursor:
-            ambient = Ambient()
-            ambient.sensor = sensor
-            ambient.date = date
-            ambient.temperature = temp
-            ambient.humidity = humi
-            result_set.append(ambient)
+            # ambient = Ambient()
+            data_sensor = {
+                'sensor': sensor,
+                'data': {
+                    'temp': temp,
+                    'humi': humi,
+                    'data': date
+                }
+            }
+            # ambient.sensor = sensor
+            # ambient.date = date
+            # ambient.temperature = temp
+            # ambient.humidity = humi
+            result_set.append(data_sensor)
 
         self.cursor.close()
         self.cnx.close()
