@@ -10,3 +10,6 @@ mysql_db_name = 'prototipo'
 
 
 # Topics
+# mqtt
+broker_host = 'gui.uva.es'
+broker_port = 5578

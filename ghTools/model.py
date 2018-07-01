@@ -25,6 +25,7 @@ class Model:
         query = """
                 SELECT sensor, date, temp, humi
                 FROM sensor{}_per_hour
+                ORDER BY date DESC 
                 LIMIT {}
                 """.format(sensor, 24 * days)
         result_set = []
