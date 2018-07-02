@@ -2,6 +2,7 @@ from pymysql import connect, MySQLError
 # from .config import *
 from ghTools.config import *
 from ghTools.ambient import Ambient
+from ghTools.irrigation import Irrigation
 
 
 class Model:
@@ -51,6 +52,17 @@ class Model:
 
         return result_set
 
+    def insert_irrigation(self, irrigation:Irrigation):
+        query = '''
+                INSERT INTO irrigation(id_relay, start, end)
+                VALUES ({}, '{}', '{}')
+                '''.format(irrigation.relay.id, irrigation.start, irrigation.end)
+
+        self.insert(query)
+
+
+
+
 
 if __name__ == "__main__":
     model = Model()
@@ -58,6 +70,6 @@ if __name__ == "__main__":
     # print('len of: {}'.format(len(rs)))
     # for ambient in rs:
     #     ambient.print()
-    rs = model.select_ambient(1,1)
-    print(rs)
+    # rs = model.select_ambient(1,1)
+    # print(rs)
 
