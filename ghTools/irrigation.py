@@ -7,8 +7,8 @@ from ghTools.model import *
 
 class Irrigation():
 
-    def __init__(self, relay_id, start: datetime, duration=0):
-        self.relay = Relay(relay_id)
+    def __init__(self, id_relay, start: datetime, duration=0):
+        self.relay = Relay(id_relay)
         self.start = start
         self.end = self.start + datetime.timedelta(minutes=duration)
         self.duration = duration
@@ -30,5 +30,6 @@ class Irrigation():
         model.insert(query=query)
 
 if __name__ == '__main__':
-    ir = Irrigation(4, datetime.datetime.now(), 10)
+    ir = Irrigation(id_relay=4,
+                    start= datetime.datetime.now(), duration=10)
     ir.insert_irrigation()

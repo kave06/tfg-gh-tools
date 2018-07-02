@@ -9,7 +9,8 @@ class Relay:
         self.id = id
         self.state = state
 
-    def set_state(self):
+    def set_state(self, state):
+        self.state = state
         publish.single('greenhouse/relay{}'.format(self.id), payload=self.state,
                        hostname=broker_host, port=broker_port)
 
