@@ -42,9 +42,11 @@ class Irrigation():
         now = datetime.now()
         # diff = (self.start - now).total_seconds()
         # self.relay.state = 'ON'
+        print('on scheduler')
         s.enter((self.start - now).total_seconds(), 0, self.set_irrigation, argument=('ON',))
         s.enter((self.end   - now).total_seconds(), 0, self.set_irrigation, argument=('OFF',))
         s.run()
+        print('after scheduler')
 
         # print(diff)
 
