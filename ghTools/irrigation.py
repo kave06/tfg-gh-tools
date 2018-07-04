@@ -22,28 +22,31 @@ class Irrigation():
         self.start = start
         self.duration = duration
 
-    def insert_irrigation(self):
+    # def insert_irrigation__(self):
+    #     model = Model()
+    #     model.insert_irrigation(self)
 
-        query = '''
-                INSERT INTO irrigation (id_relay, start, end)
-                VALUES ({}, '{}' ,'{}')
-                '''.format(self.relay.id, self.start, self.end)
+        # query = '''
+        #         INSERT INTO irrigation (id_relay, start, end)
+        #         VALUES ({}, '{}' ,'{}')
+        #         '''.format(self.relay.id, self.start, self.end)
 
         # print(query)
-        model = Model()
-        model.insert(query=query)
 
 
-    def set_irrigation(self):
-        self.relay.state = 'ON'
+    def set_irrigation(self, state):
+        self.relay.state = state
+
 
     def add_scheduler(self):
         now = datetime.now()
-        diff = (self.start - now).total_seconds()
-        self.relay.state = 'ON'
-        s.enter((self.start - now).total_seconds(), 0, self.set_irrigation)
+        # diff = (self.start - now).total_seconds()
+        # self.relay.state = 'ON'
+        s.enter((self.start - now).total_seconds(), 0, self.set_irrigation, argument=('ON',))
+        s.enter((self.end   - now).total_seconds(), 0, self.set_irrigation, argument=('OFF',))
+        s.run()
 
-        print(diff)
+        # print(diff)
 
 if __name__ == '__main__':
     ir = Irrigation(id_relay=4,
