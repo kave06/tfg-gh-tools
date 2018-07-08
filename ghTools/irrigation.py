@@ -11,11 +11,12 @@ s = sched.scheduler(time.time, time.sleep)
 
 class Irrigation():
 
-    def __init__(self, id_relay, start: datetime, duration=0):
+    def __init__(self, id_relay, start: datetime, duration=0, liters=0):
         self.relay = Relay(id_relay)
         self.start = start
         self.end = self.start + timedelta(minutes=duration)
         self.duration = duration
+        self.liters = liters
 
     def start_irrigation(self):
         self.relay.state = 'ON'
@@ -35,11 +36,17 @@ class Irrigation():
 
 
     def set_irrigation(self, state):
-        self.relay.state = state
+        self.relay.set_state(state)
 
 
     def add_scheduler(self):
         now = datetime.now()
+        start = self.start - now
+        start = start.total_seconds()
+        end = (self.end   - now).total_seconds()
+
+        print(start)
+        print(end)
         # diff = (self.start - now).total_seconds()
         # self.relay.state = 'ON'
         print('on scheduler')
@@ -52,8 +59,9 @@ class Irrigation():
 
 if __name__ == '__main__':
     ir = Irrigation(id_relay=4,
-                    start= datetime.now() + timedelta(seconds=10), duration=10)
+                    start= datetime.now() + timedelta(seconds=10), duration=0.1)
     # ir.insert_irrigation()
+    ir.set_irrigation('OFF')
 
     ir.add_scheduler()
 
