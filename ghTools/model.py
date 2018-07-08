@@ -52,16 +52,21 @@ class Model:
 
         return result_set
 
-    def insert_irrigation(self, irrigation:Irrigation):
+    def insert_irrigation(self, irrigation: Irrigation):
         query = '''
-                INSERT INTO irrigation(id_relay, start, end)
-                VALUES ({}, '{}', '{}')
-                '''.format(irrigation.relay.id, irrigation.start, irrigation.end)
+                INSERT INTO irrigation(id_relay, start, end, liters)
+                VALUES ({}, '{}', '{}', {}})
+                '''.format(irrigation.relay.id, irrigation.start,
+                           irrigation.end, irrigation.liters)
 
         self.insert(query)
 
-
-
+    def add_liter_irrigation(self):
+        query = '''
+                SELECT *
+                FROM irrigation
+                '''
+        pass
 
 
 if __name__ == "__main__":
@@ -72,4 +77,3 @@ if __name__ == "__main__":
     #     ambient.print()
     # rs = model.select_ambient(1,1)
     # print(rs)
-
