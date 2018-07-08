@@ -55,7 +55,7 @@ class Model:
     def insert_irrigation(self, irrigation: Irrigation):
         query = '''
                 INSERT INTO irrigation(id_relay, start, end, liters)
-                VALUES ({}, '{}', '{}', {}})
+                VALUES ({}, '{}', '{}', {})
                 '''.format(irrigation.relay.id, irrigation.start,
                            irrigation.end, irrigation.liters)
 

@@ -12,13 +12,17 @@ s = sched.scheduler(time.time, time.sleep)
 
 class Irrigation():
 
-    def __init__(self, id_relay, start: datetime, duration=0, liters=0):
+    def __init__(self, id_relay, start: datetime, end=None, duration=0, liters=0):
         self.relay = Relay(id_relay)
         self.start = start
-        self.end = self.start + timedelta(minutes=duration)
         self.duration = duration
         self.liters = liters
         self.logger = Logger.create_log()
+        if end == None:
+            self.end = self.start + timedelta(minutes=duration)
+        else:
+            self.end =end
+
 
     def start_irrigation(self):
         self.relay.state = 'ON'
