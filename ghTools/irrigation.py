@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 
 from ghTools.relay import Relay
 from ghTools.model import *
+from ghTools.logger import Logger
 
 s = sched.scheduler(time.time, time.sleep)
 
@@ -17,6 +18,7 @@ class Irrigation():
         self.end = self.start + timedelta(minutes=duration)
         self.duration = duration
         self.liters = liters
+        self.logger = Logger.create_log()
 
     def start_irrigation(self):
         self.relay.state = 'ON'
