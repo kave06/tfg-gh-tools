@@ -9,7 +9,7 @@ class Logger:
         file = './log/' + 'logger.log'
         logger = logging.getLogger(__name__)
         logger.setLevel(logging.DEBUG)
-        fh = logging.FileHandler(file, mode='w')
+        fh = logging.FileHandler(file, mode='w+')
         # fh_historic = logging.FileHandler(historic, mode='a')
         fh.setLevel(logging.DEBUG)
         # fh_historic.setLevel(logging.ERROR)
