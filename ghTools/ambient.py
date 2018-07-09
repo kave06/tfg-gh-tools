@@ -1,8 +1,8 @@
 from datetime import datetime
-from websocket import create_connection
+# from websocket import create_connection
 import json
 
-WS_IP = 'ws://127.0.0.1:8000'
+# WS_IP = 'ws://127.0.0.1:8000'
 
 
 class Ambient:
@@ -23,12 +23,12 @@ class Ambient:
             }
         }
         # message = 'get_last_items,{},{}'.format(self.sensor, days)
-        ws = create_connection(WS_IP)
-        ws.send(json.dumps(message))
-        result = ws.recv()
-
-        for row in result:
-            row.print()
+        # ws = create_connection(WS_IP)
+        # ws.send(json.dumps(message))
+        # result = ws.recv()
+        #
+        # for row in result:
+        #     row.print()
 
     def serialize(self):
         data_sensor = {
