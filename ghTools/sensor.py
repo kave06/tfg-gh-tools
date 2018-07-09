@@ -1,6 +1,6 @@
-from websocket import create_connection
+# from websocket import create_connection
 
-WS_IP = 'ws://127.0.0.1:8000'
+# WS_IP = 'ws://127.0.0.1:8000'
 
 
 class Sensor:
@@ -25,9 +25,9 @@ class Sensor:
 
     def get_last_ambient(self, days):
         message = 'get_last_items,{},{}'.format(self.id, days)
-        ws = create_connection(WS_IP)
-        ws.send(message)
-        result = ws.recv()
-
-        for row in result:
-            row.print()
+        # ws = create_connection(WS_IP)
+        # ws.send(message)
+        # result = ws.recv()
+        #
+        # for row in result:
+        #     row.print()
