@@ -1,6 +1,6 @@
 import logging
 
-class Logger(logging):
+class Logger():
 
     def __init__(self, name:str, path : str='./log/'):
         self.path = path
