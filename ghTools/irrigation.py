@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 
 from ghTools.relay import Relay
 from ghTools.model import *
-from ghTools.logger import Logger
+# from ghTools.logger import Logger
 
 s = sched.scheduler(time.time, time.sleep)
 

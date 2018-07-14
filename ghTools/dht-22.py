@@ -1,4 +1,4 @@
-from greenhouse.ambient import Ambient
+# from greenhouse.ambient import Ambient
 class Dht_22():
 
     def __init__(self, id, ambient ):
