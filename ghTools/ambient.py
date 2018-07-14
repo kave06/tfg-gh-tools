@@ -1,8 +1,5 @@
 from datetime import datetime
-# from websocket import create_connection
-import json
-
-# WS_IP = 'ws://127.0.0.1:8000'
+from .logger import Logger
 
 
 class Ambient:
