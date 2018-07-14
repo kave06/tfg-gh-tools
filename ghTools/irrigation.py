@@ -2,10 +2,9 @@ import datetime
 import time, sched
 from datetime import datetime, timedelta
 
-
 from ghTools.relay import Relay
 from ghTools.model import *
-# from ghTools.logger import Logger
+from ghTools.logger import Logger
 
 s = sched.scheduler(time.time, time.sleep)
 
@@ -17,12 +16,11 @@ class Irrigation():
         self.start = start
         self.duration = duration
         self.liters = liters
-        self.logger = Logger.create_log()
+        self.logger = Logger.init_logger()
         if end == None:
             self.end = self.start + timedelta(minutes=duration)
         else:
-            self.end =end
-
+            self.end = end
 
     def start_irrigation(self):
         self.relay.state = 'ON'
@@ -33,23 +31,21 @@ class Irrigation():
     #     model = Model()
     #     model.insert_irrigation(self)
 
-        # query = '''
-        #         INSERT INTO irrigation (id_relay, start, end)
-        #         VALUES ({}, '{}' ,'{}')
-        #         '''.format(self.relay.id, self.start, self.end)
+    # query = '''
+    #         INSERT INTO irrigation (id_relay, start, end)
+    #         VALUES ({}, '{}' ,'{}')
+    #         '''.format(self.relay.id, self.start, self.end)
 
-        # print(query)
-
+    # print(query)
 
     def set_irrigation(self, state):
         self.relay.set_state(state)
-
 
     def add_scheduler(self):
         now = datetime.now()
         start = self.start - now
         start = start.total_seconds()
-        end = (self.end   - now).total_seconds()
+        end = (self.end - now).total_seconds()
 
         print(start)
         print(end)
@@ -57,17 +53,17 @@ class Irrigation():
         # self.relay.state = 'ON'
         print('on scheduler')
         s.enter((self.start - now).total_seconds(), 0, self.set_irrigation, argument=('ON',))
-        s.enter((self.end   - now).total_seconds(), 0, self.set_irrigation, argument=('OFF',))
+        s.enter((self.end - now).total_seconds(), 0, self.set_irrigation, argument=('OFF',))
         s.run()
         print('after scheduler')
 
         # print(diff)
 
+
 if __name__ == '__main__':
     ir = Irrigation(id_relay=4,
-                    start= datetime.now() + timedelta(seconds=10), duration=0.1)
+                    start=datetime.now() + timedelta(seconds=10), duration=0.1)
     # ir.insert_irrigation()
     ir.set_irrigation('OFF')
 
     ir.add_scheduler()
-

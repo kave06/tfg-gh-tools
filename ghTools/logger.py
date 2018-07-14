@@ -1,54 +1,31 @@
 import logging
 
-# class Logger():
-#
-#     def __init__(self, name:str, path : str='./log/'):
-#         self.path = path
-#         self.name = name
-#
-#         file_debug = path + name + '_debug.log'
-#         file_hist = path +name + '.log'
-#         formatter = logging.Formatter('%(asctime)s %(levelname)-8s %(filename)-14s '
-#                                       '%(funcName)-15s:%(lineno)-3s %(message)s')
-#
-#         logger = logging.getLogger(__name__)
-#         logger.setLevel(logging.DEBUG)
-#
-#         fh1 = logging.FileHandler(filename=file_debug, mode='w+')
-#         fh2 = logging.FileHandler(filename=file_hist, mode='a+')
-#
-#         fh1.setLevel(logging.DEBUG)
-#         fh2.setLevel(logging.ERROR)
-#
-#         fh1.setFormatter(formatter)
-#         fh2.setFormatter(formatter)
-#
-#         logger.addHandler(fh1)
-#         logger.addHandler(fh2)
 
+class Logger():
 
+    @staticmethod
+    def init_logger(name: str = 'greenhouse', path: str = './log/') -> logging:
+        file_debug = path + name + '_debug.log'
+        file_hist = path + name + '.log'
+        formatter = logging.Formatter('%(asctime)s %(levelname)-8s %(filename)-14s '
+                                      '%(funcName)-15s:%(lineno)-3s %(message)s')
 
+        logger = logging.getLogger(__name__)
+        logger.setLevel(logging.DEBUG)
 
-def init_logger(name:str, path : str='./log/'):
-    file_debug = path + name + '_debug.log'
-    file_hist = path +name + '.log'
-    formatter = logging.Formatter('%(asctime)s %(levelname)-8s %(filename)-14s '
-                                  '%(funcName)-15s:%(lineno)-3s %(message)s')
+        fh1 = logging.FileHandler(filename=file_debug, mode='a+')
+        fh2 = logging.FileHandler(filename=file_hist, mode='a+')
 
-    logger = logging.getLogger(__name__)
-    logger.setLevel(logging.DEBUG)
+        fh1.setLevel(logging.DEBUG)
+        fh2.setLevel(logging.ERROR)
 
-    fh1 = logging.FileHandler(filename=file_debug, mode='w+')
-    fh2 = logging.FileHandler(filename=file_hist, mode='a+')
+        fh1.setFormatter(formatter)
+        fh2.setFormatter(formatter)
 
-    fh1.setLevel(logging.DEBUG)
-    fh2.setLevel(logging.ERROR)
+        logger.addHandler(fh1)
+        logger.addHandler(fh2)
 
-    fh1.setFormatter(formatter)
-    fh2.setFormatter(formatter)
-
-    logger.addHandler(fh1)
-    logger.addHandler(fh2)
+        return logger
 
     # def create_logger(self, name):
     #     path = './log/'
@@ -95,4 +72,3 @@ def init_logger(name:str, path : str='./log/'):
     #     logger.addHandler(fh)
     #     # logger.addHandler(fh_historic)
     #     return logger
-

@@ -1,4 +1,5 @@
 from datetime import datetime
+from ghTools.logger import Logger
 
 
 class Ambient:
@@ -9,6 +10,7 @@ class Ambient:
         self.date = datetime.now()
         self.temperature = temperature
         self.humidity = humidity
+        self.logger = Logger.init_logger()
 
     def get_last_items(self, days):
         message = {
