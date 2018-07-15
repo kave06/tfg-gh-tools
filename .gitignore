@@ -10,3 +10,5 @@
 .idea/
 basura/
 __pycache__/
+
+ghTools/log/*
