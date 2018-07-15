@@ -33,7 +33,7 @@ class Model:
             self.logger.error(err)
 
     def insert(self, query: str):
-        self.logger.debug(query)
+        # self.logger.debug(query)
         try:
             self.cursor.execute(query)
             self.cnx.commit()
@@ -85,7 +85,7 @@ class Model:
                            irrigation.end, irrigation.liters)
 
         self.insert(query)
-        self.logger.debug(query)
+        # self.logger.debug(query)
 
     def add_liter_irrigation(self):
         query = '''
