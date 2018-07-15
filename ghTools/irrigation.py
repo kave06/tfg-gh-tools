@@ -54,7 +54,7 @@ class Irrigation():
         s.enter((self.start - now).total_seconds(), 0, self.set_irrigation, argument=('ON',))
         s.enter((self.end - now).total_seconds(), 0, self.set_irrigation, argument=('OFF',))
         s.run()
-        self.logger.debug('irrigation added to scheduler')
+        self.logger.debug('irrigation end')
 
 
 if __name__ == '__main__':
