@@ -2,11 +2,14 @@ import logging
 
 
 class Logger():
+    def __init__(self, name: str = 'greenhouse', path: str = './log/'):
+        self.name = name
+        self.path = path
 
-    @staticmethod
-    def init_logger(name: str = 'greenhouse', path: str = './log/') -> logging:
-        file_debug = path + name + '_debug.log'
-        file_hist = path + name + '.log'
+    # @staticmethod
+    def init_logger(self) -> logging:
+        file_debug = self.path + self.name + '_debug.log'
+        file_hist = self.path + self.name + '.log'
         formatter = logging.Formatter('%(asctime)s %(levelname)-8s %(filename)-14s '
                                       '%(funcName)-15s:%(lineno)-3s %(message)s')
 
@@ -26,6 +29,11 @@ class Logger():
         logger.addHandler(fh2)
 
         return logger
+
+
+    # @staticmethod
+    def get_logger(self):
+        return logging.getLogger(__name__)
 
     # def create_logger(self, name):
     #     path = './log/'

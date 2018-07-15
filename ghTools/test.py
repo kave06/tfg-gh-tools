@@ -1,6 +1,9 @@
 from time import sleep
+import logging
 
 from ghTools.relay import Relay
+from ghTools.logger import Logger
+
 
 
 if __name__ == '__main__':
@@ -9,3 +12,6 @@ if __name__ == '__main__':
     sleep(2)
     relay.state = 'OFF'
     relay.set_state('OFF')
+    print(logging.getLogger())
+
+

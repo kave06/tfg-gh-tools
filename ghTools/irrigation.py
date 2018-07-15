@@ -16,7 +16,7 @@ class Irrigation():
         self.start = start
         self.duration = duration
         self.liters = liters
-        self.logger = Logger.init_logger()
+        self.logger = Logger().get_logger()
         if end == None:
             self.end = self.start + timedelta(minutes=duration)
         else:

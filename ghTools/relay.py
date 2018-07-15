@@ -9,7 +9,7 @@ class Relay:
     def __init__(self, id, state='OFF'):
         self.id = id
         self.state = state
-        self.logger = Logger.init_logger()
+        self.logger = Logger().get_logger()
 
     def set_state(self, state):
         self.state = state

@@ -6,6 +6,7 @@ from ghTools.ambient import Ambient
 from ghTools.irrigation import Irrigation
 from ghTools.logger import Logger
 
+
 # from .config import *
 # from .ambient import Ambient
 # from .irrigation import Irrigation
@@ -21,7 +22,8 @@ class Model:
         self.user = user
         self.passw = password
         self.db = db
-        self.logger = Logger.init_logger()
+        self.logger = Logger().get_logger()
+        self.logger.debug('hola')
 
         try:
             self.cnx = connect(host=self.host, port=self.port, user=self.user,
@@ -36,8 +38,6 @@ class Model:
         try:
             self.cursor.execute(query)
             self.cnx.commit()
-            self.cursor.close()
-            self.cnx.close()
             self.logger.debug('inserted correctly in database')
         except MySQLError as err:
             self.logger.error(err)
@@ -94,12 +94,11 @@ class Model:
                 '''
         pass
 
-
 # if __name__ == "__main__":
 #     model = Model()
-    # rs = model.select_ambient(query)
-    # print('len of: {}'.format(len(rs)))
-    # for ambient in rs:
-    #     ambient.print()
-    # rs = model.select_ambient(1,1)
-    # print(rs)
+# rs = model.select_ambient(query)
+# print('len of: {}'.format(len(rs)))
+# for ambient in rs:
+#     ambient.print()
+# rs = model.select_ambient(1,1)
+# print(rs)

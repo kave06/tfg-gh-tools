@@ -10,7 +10,8 @@ class Ambient:
         self.date = datetime.now()
         self.temperature = temperature
         self.humidity = humidity
-        self.logger = Logger.init_logger()
+        # self.logger = Logger.init_logger()
+        self.logger = Logger().get_logger()
 
     def get_last_items(self, days):
         message = {
