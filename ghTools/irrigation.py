@@ -11,7 +11,7 @@ s = sched.scheduler(time.time, time.sleep)
 
 class Irrigation():
 
-    def __init__(self, id_relay, start: datetime, end=None, duration=0, liters=0):
+    def __init__(self, id_relay, start: datetime, end=None, duration=0.0, liters=0):
         self.relay = Relay(id_relay)
         self.start = start
         self.duration = duration
@@ -22,10 +22,10 @@ class Irrigation():
         else:
             self.end = end
 
-    def start_irrigation(self):
-        self.relay.state = 'ON'
-        self.start = start
-        self.duration = duration
+    # def start_irrigation(self):
+    #     self.relay.state = 'ON'
+    #     self.start = start
+    #     self.duration = duration
 
     # def insert_irrigation__(self):
     #     model = Model()
@@ -40,6 +40,7 @@ class Irrigation():
 
     def set_irrigation(self, state):
         self.relay.set_state(state)
+        self.logger.debug('state of relay: {}'.format(self.relay.state))
 
     def add_scheduler(self):
         now = datetime.now()
@@ -47,17 +48,14 @@ class Irrigation():
         start = start.total_seconds()
         end = (self.end - now).total_seconds()
 
-        print(start)
-        print(end)
-        # diff = (self.start - now).total_seconds()
-        # self.relay.state = 'ON'
         print('on scheduler')
+        self.logger.debug('irrigation start: {}'.format(start))
+        self.logger.debug('irrigation end: {}'.format(end))
         s.enter((self.start - now).total_seconds(), 0, self.set_irrigation, argument=('ON',))
         s.enter((self.end - now).total_seconds(), 0, self.set_irrigation, argument=('OFF',))
         s.run()
         print('after scheduler')
-
-        # print(diff)
+        self.logger.debug('irrigation added to scheduler')
 
 
 if __name__ == '__main__':
@@ -65,5 +63,6 @@ if __name__ == '__main__':
                     start=datetime.now() + timedelta(seconds=10), duration=0.1)
     # ir.insert_irrigation()
     ir.set_irrigation('OFF')
+    # ir.set_irrigation(state='ON')
 
     ir.add_scheduler()

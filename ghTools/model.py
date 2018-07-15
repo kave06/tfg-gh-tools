@@ -23,7 +23,6 @@ class Model:
         self.passw = password
         self.db = db
         self.logger = Logger().get_logger()
-        self.logger.debug('hola')
 
         try:
             self.cnx = connect(host=self.host, port=self.port, user=self.user,
@@ -52,7 +51,6 @@ class Model:
                 ORDER BY date DESC 
                 LIMIT {}
                 """.format(sensor, 24 * days)
-        self.logger.debug(query)
         result_set = []
         self.cursor.execute(query=query)
         for (sensor, date, temp, humi) in self.cursor:
@@ -70,10 +68,11 @@ class Model:
             # ambient.temperature = temp
             # ambient.humidity = humi
             result_set.append(data_sensor)
-            self.logger.debug(data_sensor)
+            # self.logger.debug(data_sensor)
 
         self.cursor.close()
         self.cnx.close()
+        self.logger.debug('select query done')
         self.logger.debug('connection closed to database')
 
         return result_set
@@ -86,6 +85,7 @@ class Model:
                            irrigation.end, irrigation.liters)
 
         self.insert(query)
+        self.logger.debug(query)
 
     def add_liter_irrigation(self):
         query = '''
