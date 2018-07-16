@@ -89,18 +89,16 @@ class Model:
             LIMIT 1
                 '''.format(self.sensor)
         try:
-            self.logger.debug('try')
             self.cursor.execute(query=query)
             last_temp = self.cursor.fetchone()
-            self.logger.debug(last_temp)
         except MySQLError as err:
             self.logger.error(err)
         finally:
             self.cursor.close()
             self.cnx.close()
-        # return last_temp[0]
+        return last_temp[0]
 
-    def get_last_humidity(self, sensor):
+    def get_last_humidity(self):
         last_humi = None
         query = '''
             SELECT humi
@@ -108,7 +106,7 @@ class Model:
             WHERE sensor = '{}'
             ORDER BY date DESC 
             LIMIT 1
-                '''.format(sensor)
+                '''.format(self.sensor)
         try:
             self.cursor.execute(query=query)
             last_humi = self.cursor.fetchone()
@@ -117,7 +115,7 @@ class Model:
         finally:
             self.cursor.close()
             self.cnx.close()
-        return last_humi
+        return last_humi[0]
 
     def add_liter_irrigation(self):
         query = '''
