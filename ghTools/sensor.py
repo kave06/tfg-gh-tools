@@ -1,13 +1,14 @@
 # from websocket import create_connection
 
 # WS_IP = 'ws://127.0.0.1:8000'
-
+from ghTools import Model
 
 class Sensor:
 
     def __init__(self, id: int = 0, model: str = None):
         self.id = id
         self.mod = model
+        self.model = Model()
 
     def get_last_temperature(self):
         '''

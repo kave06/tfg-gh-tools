@@ -1,16 +1,9 @@
 from pymysql import connect, MySQLError
-# from .config import *
 
 from ghTools.config import *
 from ghTools.ambient import Ambient
 from ghTools.irrigation import Irrigation
 from ghTools.logger import Logger
-
-
-# from .config import *
-# from .ambient import Ambient
-# from .irrigation import Irrigation
-# from .logger import init_logger
 
 
 class Model:
@@ -52,26 +45,24 @@ class Model:
                 LIMIT {}
                 """.format(sensor, 24 * days)
         result_set = []
-        self.cursor.execute(query=query)
-        for (sensor, date, temp, humi) in self.cursor:
-            # ambient = Ambient()
-            data_sensor = {
-                'sensor': sensor,
-                'data': {
-                    'temp': temp,
-                    'humi': humi,
-                    'data': date
+        try:
+            self.cursor.execute(query=query)
+            for (sensor, date, temp, humi) in self.cursor:
+                data_sensor = {
+                    'sensor': sensor,
+                    'data': {
+                        'temp': temp,
+                        'humi': humi,
+                        'date': date
+                    }
                 }
-            }
-            # ambient.sensor = sensor
-            # ambient.date = date
-            # ambient.temperature = temp
-            # ambient.humidity = humi
-            result_set.append(data_sensor)
-            # self.logger.debug(data_sensor)
+                result_set.append(data_sensor)
+        except MySQLError as err:
+            self.logger.error(err)
+        finally:
+            self.cursor.close()
+            self.cnx.close()
 
-        self.cursor.close()
-        self.cnx.close()
         self.logger.debug('select query done')
         self.logger.debug('connection closed to database')
 
@@ -86,6 +77,44 @@ class Model:
 
         self.insert(query)
         # self.logger.debug(query)
+
+    def get_last_temperature(self, sensor):
+        last_temp = None
+        query = '''
+            SELECT temp
+            FROM ambient_data
+            WHERE sensor = '{}'
+            ORDER BY date DESC 
+            LIMIT 1
+                '''.format(sensor)
+        try:
+            self.cursor.execute(query=query)
+            last_temp = self.cursor.fetchone()
+        except MySQLError as err:
+            self.logger.error(err)
+        finally:
+            self.cursor.close()
+            self.cnx.close()
+        return last_temp
+
+    def get_last_humidity(self, sensor):
+        last_humi = None
+        query = '''
+            SELECT humi
+            FROM ambient_data
+            WHERE sensor = '{}'
+            ORDER BY date DESC 
+            LIMIT 1
+                '''.format(sensor)
+        try:
+            self.cursor.execute(query=query)
+            last_humi = self.cursor.fetchone()
+        except MySQLError as err:
+            self.logger.error(err)
+        finally:
+            self.cursor.close()
+            self.cnx.close()
+        return last_humi
 
     def add_liter_irrigation(self):
         query = '''
