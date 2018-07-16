@@ -8,7 +8,7 @@ class Sensor:
     def __init__(self, id: int = 0, model: str = None):
         self.id = id
         self.mod = model
-        self.model = Model()
+        self.model = Model(self.id)
 
     def get_last_temperature(self):
         '''

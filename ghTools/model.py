@@ -8,13 +8,14 @@ from ghTools.logger import Logger
 
 class Model:
 
-    def __init__(self, host=mysql_host, port=mysql_port, user=mysql_user,
+    def __init__(self, sensor, host=mysql_host, port=mysql_port, user=mysql_user,
                  password=mysql_pass, db=mysql_db_name):
         self.host = host
         self.port = port
         self.user = user
         self.passw = password
         self.db = db
+        self.sensor = sensor
         self.logger = Logger().get_logger()
 
         try:
@@ -78,7 +79,7 @@ class Model:
         self.insert(query)
         # self.logger.debug(query)
 
-    def get_last_temperature(self, sensor):
+    def get_last_temperature(self):
         last_temp = None
         query = '''
             SELECT temp
@@ -86,16 +87,18 @@ class Model:
             WHERE sensor = '{}'
             ORDER BY date DESC 
             LIMIT 1
-                '''.format(sensor)
+                '''.format(self.sensor)
         try:
+            self.logger.debug('try')
             self.cursor.execute(query=query)
             last_temp = self.cursor.fetchone()
+            self.logger.debug(last_temp)
         except MySQLError as err:
             self.logger.error(err)
         finally:
             self.cursor.close()
             self.cnx.close()
-        return last_temp
+        # return last_temp[0]
 
     def get_last_humidity(self, sensor):
         last_humi = None
