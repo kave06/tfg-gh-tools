@@ -16,7 +16,7 @@ class Logger():
         logger = logging.getLogger(__name__)
         logger.setLevel(logging.DEBUG)
 
-        fh1 = logging.FileHandler(filename=file_debug, mode='a+')
+        fh1 = logging.FileHandler(filename=file_debug, mode='w+')
         fh2 = logging.FileHandler(filename=file_hist, mode='a+')
 
         fh1.setLevel(logging.DEBUG)
