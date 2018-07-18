@@ -2,7 +2,6 @@ from pymysql import connect, MySQLError
 
 from ghTools.config import *
 from ghTools.ambient import Ambient
-from ghTools.irrigation import Irrigation
 from ghTools.logger import Logger
 
 
@@ -86,7 +85,7 @@ class Model:
             WHERE sensor = '{}'
             ORDER BY date DESC 
             LIMIT 1
-                '''.format(self.sensor)
+                '''.format(self.device)
         try:
             self.cursor.execute(query=query)
             last_temp = self.cursor.fetchone()
