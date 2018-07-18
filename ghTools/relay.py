@@ -4,6 +4,7 @@ from time import sleep
 from ghTools.config import broker_host, broker_port
 from ghTools.logger import Logger
 
+TOPIC = 'greenhouse/relay'
 class Relay:
 
     def __init__(self, id, state='OFF'):
@@ -13,10 +14,10 @@ class Relay:
 
     def set_state(self, state):
         self.state = state
-        publish.single('greenhouse/relay{}'.format(self.id), payload=self.state,
+        publish.single(TOPIC + '{}'.format(self.id), payload=self.state,
                        hostname=broker_host, port=broker_port)
-        self.logger.debug('greenhouse/relay{} payload:{} hostname:{} port:{}'.format(self.id, self.state,
-                       broker_host, broker_port))
+        self.logger.debug(TOPIC + '{} payload:{} hostname:{} port:{}'
+                          .format(self.id, self.state, broker_host, broker_port))
 
 
 if __name__ == '__main__':
