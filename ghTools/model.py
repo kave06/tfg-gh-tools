@@ -69,12 +69,11 @@ class Model:
 
         return result_set
 
-    def insert_irrigation(self, irrigation: Irrigation):
+    def insert_irrigation(self, start, end, liters=0):
         query = '''
                 INSERT INTO irrigation(id_relay, start, end, liters)
                 VALUES ({}, '{}', '{}', {})
-                '''.format(irrigation.relay.id, irrigation.start,
-                           irrigation.end, irrigation.liters)
+                '''.format(self.device, start, end, liters)
 
         self.insert(query)
         # self.logger.debug(query)
@@ -107,7 +106,7 @@ class Model:
             WHERE sensor = '{}'
             ORDER BY date DESC 
             LIMIT 1
-                '''.format(self.sensor)
+                '''.format(self.device)
         try:
             self.cursor.execute(query=query)
             last_humi = self.cursor.fetchone()
