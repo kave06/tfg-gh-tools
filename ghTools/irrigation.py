@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 from threading import Thread
 
 from ghTools.relay import Relay
-from ghTools.model import *
+from ghTools.model import Model
 from ghTools.logger import Logger
 
 s = sched.scheduler(time.time, time.sleep)
@@ -18,6 +18,7 @@ class Irrigation():
         self.duration = duration
         self.liters = liters
         self.logger = Logger().get_logger()
+        self.model = Model(device=id_relay)
         if end == None:
             self.end = self.start + timedelta(minutes=duration)
         else:

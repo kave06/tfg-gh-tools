@@ -8,14 +8,14 @@ from ghTools.logger import Logger
 
 class Model:
 
-    def __init__(self, sensor, host=mysql_host, port=mysql_port, user=mysql_user,
+    def __init__(self, device, host=mysql_host, port=mysql_port, user=mysql_user,
                  password=mysql_pass, db=mysql_db_name):
         self.host = host
         self.port = port
         self.user = user
         self.passw = password
         self.db = db
-        self.sensor = sensor
+        self.device = device
         self.logger = Logger().get_logger()
 
         try:
@@ -82,7 +82,7 @@ class Model:
     def get_last_temperature(self):
         last_temp = None
         query = '''
-            SELECT temp
+            SELECT temp 
             FROM ambient_data
             WHERE sensor = '{}'
             ORDER BY date DESC 
@@ -91,6 +91,7 @@ class Model:
         try:
             self.cursor.execute(query=query)
             last_temp = self.cursor.fetchone()
+            self.logger.debug(last_temp)
         except MySQLError as err:
             self.logger.error(err)
         finally:
