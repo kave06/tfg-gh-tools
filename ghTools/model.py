@@ -1,9 +1,11 @@
 from pymysql import connect, MySQLError
+from datetime import datetime, timedelta
 
 from ghTools.config import *
 from ghTools.ambient import Ambient
 from ghTools.logger import Logger
 
+FORMAT = '%Y-%m-%d %H:%M:%S.%f'
 
 class Model:
 
@@ -37,6 +39,21 @@ class Model:
             self.cursor.close()
             self.cnx.close()
 
+
+    def select(self, query: str):
+        try:
+            self.cursor.execute(query=query)
+            rs = self.cursor.fetchall()
+            self.logger.debug(rs)
+        except MySQLError as err:
+            self.logger.error(err)
+        finally:
+            self.cursor.close()
+            self.cnx.close()
+        return rs
+
+
+
     def select_ambient(self, sensor, days) -> list:
         query = """
                 SELECT sensor, date, temp, humi
@@ -68,14 +85,35 @@ class Model:
 
         return result_set
 
-    def insert_irrigation(self, start, end, liters=0):
-        query = '''
-                INSERT INTO irrigation(id_relay, start, end, liters)
-                VALUES ({}, '{}', '{}', {})
-                '''.format(self.device, start, end, liters)
+    def insert_irrigation(self, start:datetime, end:datetime, liters=0) -> bool:
+        collision = self.__check_irrigation_collision(start=start, end=end)
+        if collision: self.logger.info('there are irrigaition in the same hours')
+        else:
+            query = '''
+                    INSERT INTO irrigation(id_relay, start, end, liters)
+                        VALUES ({}, '{}', '{}', {})
+                    '''.format(self.device, start, end, liters)
 
-        self.insert(query)
+            self.insert(query)
         # self.logger.debug(query)
+        return not collision
+
+    def __check_irrigation_collision(self, start:datetime, end:datetime) -> bool:
+
+        query = '''
+                SELECT * 
+                FROM irrigation 
+                WHERE id_relay={} AND NOT
+                    (
+                    irrigation.start > '{}' OR 
+                    irrigation.end < '{}'
+                    ) 
+                '''.format(self.device, end, start)
+        rs = self.select(query=query)
+        print(rs)
+        print(type(rs))
+        if rs: return True
+        else: return False
 
     def get_last_temperature(self):
         last_temp = None
@@ -123,8 +161,20 @@ class Model:
                 '''
         pass
 
-# if __name__ == "__main__":
-#     model = Model()
+if __name__ == "__main__":
+    model = Model(4)
+    start = datetime.now()
+    end = start + timedelta(hours=1)
+    collision_start1 = datetime(2018,7,18,20,25,0)
+    collision_end1 = datetime(2018,7,18,20,30,0)
+    collision_start2 = datetime(2018,7,18,20,27,0)
+    collision_end2 = datetime(2018,7,18,20,30,0)
+    collision_start3 = datetime(2018,7,18,21,2,0)
+    collision_end3 = datetime(2018,7,18,21,35,0)
+    condition = model.check_irrigation(start=start, end=end)
+    # model.check_irrigation(start=collision_start1, end=collision_end1)
+    # condition = model.check_irrigation(start=collision_start3, end=collision_end3)
+    print(condition)
 # rs = model.select_ambient(query)
 # print('len of: {}'.format(len(rs)))
 # for ambient in rs:
