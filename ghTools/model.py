@@ -7,7 +7,8 @@ from ghTools.logger import Logger
 
 FORMAT = '%Y-%m-%d %H:%M:%S.%f'
 
-class Model:
+
+class _Model:
 
     def __init__(self, device, host=mysql_host, port=mysql_port, user=mysql_user,
                  password=mysql_pass, db=mysql_db_name):
@@ -39,7 +40,6 @@ class Model:
             self.cursor.close()
             self.cnx.close()
 
-
     def select(self, query: str):
         try:
             self.cursor.execute(query=query)
@@ -52,8 +52,6 @@ class Model:
             self.cnx.close()
         return rs
 
-
-
     def select_ambient(self, sensor, days) -> list:
         query = """
                 SELECT sensor, date, temp, humi
@@ -61,33 +59,26 @@ class Model:
                 ORDER BY date DESC 
                 LIMIT {}
                 """.format(sensor, 24 * days)
+        rs = self.select(query)
         result_set = []
-        try:
-            self.cursor.execute(query=query)
-            for (sensor, date, temp, humi) in self.cursor:
-                data_sensor = {
-                    'sensor': sensor,
-                    'data': {
-                        'temp': temp,
-                        'humi': humi,
-                        'date': date
-                    }
+        # self.cursor.execute(query=query)
+        for (sensor, date, temp, humi) in rs:
+            data_sensor = {
+                'sensor': sensor,
+                'data': {
+                    'temp': temp,
+                    'humi': humi,
+                    'date': date
                 }
-                result_set.append(data_sensor)
-        except MySQLError as err:
-            self.logger.error(err)
-        finally:
-            self.cursor.close()
-            self.cnx.close()
-
-        self.logger.debug('select query done')
-        self.logger.debug('connection closed to database')
+            }
+            result_set.append(data_sensor)
 
         return result_set
 
-    def insert_irrigation(self, start:datetime, end:datetime, liters=0) -> bool:
+    def insert_irrigation(self, start: datetime, end: datetime, liters=0) -> bool:
         collision = self.__check_irrigation_collision(start=start, end=end)
-        if collision: self.logger.info('there are irrigaition in the same hours')
+        if collision:
+            self.logger.info('there are irrigaition in the same hours')
         else:
             query = '''
                     INSERT INTO irrigation(id_relay, start, end, liters)
@@ -98,7 +89,7 @@ class Model:
         # self.logger.debug(query)
         return not collision
 
-    def __check_irrigation_collision(self, start:datetime, end:datetime) -> bool:
+    def __check_irrigation_collision(self, start: datetime, end: datetime) -> bool:
 
         query = '''
                 SELECT * 
@@ -112,8 +103,10 @@ class Model:
         rs = self.select(query=query)
         print(rs)
         print(type(rs))
-        if rs: return True
-        else: return False
+        if rs:
+            return True
+        else:
+            return False
 
     def get_last_temperature(self):
         last_temp = None
@@ -161,20 +154,19 @@ class Model:
                 '''
         pass
 
+
 if __name__ == "__main__":
     model = Model(4)
     start = datetime.now()
     end = start + timedelta(hours=1)
-    collision_start1 = datetime(2018,7,18,20,25,0)
-    collision_end1 = datetime(2018,7,18,20,30,0)
-    collision_start2 = datetime(2018,7,18,20,27,0)
-    collision_end2 = datetime(2018,7,18,20,30,0)
-    collision_start3 = datetime(2018,7,18,21,2,0)
-    collision_end3 = datetime(2018,7,18,21,35,0)
-    condition = model.check_irrigation(start=start, end=end)
+    collision_start1 = datetime(2018, 7, 18, 20, 25, 0)
+    collision_end1 = datetime(2018, 7, 18, 20, 30, 0)
+    collision_start2 = datetime(2018, 7, 18, 20, 27, 0)
+    collision_end2 = datetime(2018, 7, 18, 20, 30, 0)
+    collision_start3 = datetime(2018, 7, 18, 21, 2, 0)
+    collision_end3 = datetime(2018, 7, 18, 21, 35, 0)
     # model.check_irrigation(start=collision_start1, end=collision_end1)
     # condition = model.check_irrigation(start=collision_start3, end=collision_end3)
-    print(condition)
 # rs = model.select_ambient(query)
 # print('len of: {}'.format(len(rs)))
 # for ambient in rs:
