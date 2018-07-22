@@ -10,14 +10,13 @@ FORMAT = '%Y-%m-%d %H:%M:%S.%f'
 
 class _Model:
 
-    def __init__(self, device, host=mysql_host, port=mysql_port, user=mysql_user,
+    def __init__(self, host=mysql_host, port=mysql_port, user=mysql_user,
                  password=mysql_pass, db=mysql_db_name):
         self.host = host
         self.port = port
         self.user = user
         self.passw = password
         self.db = db
-        self.device = device
         self.logger = Logger().get_logger()
 
         try:
@@ -75,7 +74,7 @@ class _Model:
 
         return result_set
 
-    def insert_irrigation(self, start: datetime, end: datetime, liters=0) -> bool:
+    def insert_irrigation(self, id_relay, start: datetime, end: datetime, liters=0) -> bool:
         collision = self.__check_irrigation_collision(start=start, end=end)
         if collision:
             self.logger.info('there are irrigaition in the same hours')
@@ -83,10 +82,10 @@ class _Model:
             query = '''
                     INSERT INTO irrigation(id_relay, start, end, liters)
                         VALUES ({}, '{}', '{}', {})
-                    '''.format(self.device, start, end, liters)
-
+                    '''.format(id_relay, start, end, liters)
             self.insert(query)
         # self.logger.debug(query)
+
         return not collision
 
     def __check_irrigation_collision(self, start: datetime, end: datetime) -> bool:
@@ -108,7 +107,7 @@ class _Model:
         else:
             return False
 
-    def get_last_temperature(self):
+    def get_last_temperature(self, id):
         last_temp = None
         query = '''
             SELECT temp 
@@ -116,7 +115,7 @@ class _Model:
             WHERE sensor = '{}'
             ORDER BY date DESC 
             LIMIT 1
-                '''.format(self.device)
+                '''.format(id)
         try:
             self.cursor.execute(query=query)
             last_temp = self.cursor.fetchone()
@@ -128,7 +127,7 @@ class _Model:
             self.cnx.close()
         return last_temp[0]
 
-    def get_last_humidity(self):
+    def get_last_humidity(self, id):
         last_humi = None
         query = '''
             SELECT humi
@@ -136,7 +135,7 @@ class _Model:
             WHERE sensor = '{}'
             ORDER BY date DESC 
             LIMIT 1
-                '''.format(self.device)
+                '''.format(id)
         try:
             self.cursor.execute(query=query)
             last_humi = self.cursor.fetchone()
