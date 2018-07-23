@@ -19,7 +19,7 @@ class Irrigation():
         self.duration = duration
         self.liters = liters
         self.logger = Logger().get_logger()
-        self.model = _Model(device=id_relay)
+        self.model = _Model()
         if end == None:
             self.end = self.start + timedelta(minutes=duration)
         else:
@@ -30,7 +30,7 @@ class Irrigation():
         self.logger.debug('state of relay: {}'.format(self.relay.state))
 
     def insert_irrigation(self):
-        self.model.insert_irrigation(self.relay, self.start, self.end, self.liters)
+        self.model.insert_irrigation(self.relay.id, self.start, self.end, self.liters)
 
     def add_scheduler(self):
         now = datetime.now()

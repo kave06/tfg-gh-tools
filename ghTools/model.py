@@ -35,20 +35,21 @@ class _Model:
             self.logger.debug('inserted correctly in database')
         except MySQLError as err:
             self.logger.error(err)
-        finally:
-            self.cursor.close()
-            self.cnx.close()
+        # finally:
+        #     self.cursor.close()
+        #     self.cnx.close()
 
     def select(self, query: str):
+        rs = []
         try:
             self.cursor.execute(query=query)
             rs = self.cursor.fetchall()
             self.logger.debug(rs)
         except MySQLError as err:
             self.logger.error(err)
-        finally:
-            self.cursor.close()
-            self.cnx.close()
+        # finally:
+        #     self.cursor.close()
+        #     self.cnx.close()
         return rs
 
     def select_ambient(self, sensor, days) -> list:
@@ -75,7 +76,9 @@ class _Model:
         return result_set
 
     def insert_irrigation(self, id_relay, start: datetime, end: datetime, liters=0) -> bool:
-        collision = self.__check_irrigation_collision(start=start, end=end)
+        self.logger.debug('irrigation')
+        collision = self.__check_irrigation_collision(id_relay, start=start, end=end)
+        self.logger.debug('collision:{}'.format(collision))
         if collision:
             self.logger.info('there are irrigaition in the same hours')
         else:
@@ -85,11 +88,16 @@ class _Model:
                     '''.format(id_relay, start, end, liters)
             self.insert(query)
         # self.logger.debug(query)
+        try:
+            self.cursor.close()
+            self.cnx.close()
+        except MySQLError as err:
+            self.logger.error(err)
 
         return not collision
 
-    def __check_irrigation_collision(self, start: datetime, end: datetime) -> bool:
-
+    def __check_irrigation_collision(self, id_relay, start: datetime, end: datetime) -> bool:
+        self.logger.debug('check')
         query = '''
                 SELECT * 
                 FROM irrigation 
@@ -98,10 +106,9 @@ class _Model:
                     irrigation.start > '{}' OR 
                     irrigation.end < '{}'
                     ) 
-                '''.format(self.device, end, start)
+                '''.format(id_relay, end, start)
         rs = self.select(query=query)
-        print(rs)
-        print(type(rs))
+        self.logger.debug(rs)
         if rs:
             return True
         else:
@@ -155,7 +162,7 @@ class _Model:
 
 
 if __name__ == "__main__":
-    model = Model(4)
+    model = _Model()
     start = datetime.now()
     end = start + timedelta(hours=1)
     collision_start1 = datetime(2018, 7, 18, 20, 25, 0)
