@@ -11,7 +11,7 @@ mysql_db_name = 'prototipo'
 
 # Topics
 # mqtt
-# broker_host = 'gui.uva.es'
-# broker_port = 5578
-broker_host = 'localhost'
-broker_port = 5672
+broker_host = 'gui.uva.es'
+broker_port = 5578
+# broker_host = 'localhost'
+# broker_port = 5672
