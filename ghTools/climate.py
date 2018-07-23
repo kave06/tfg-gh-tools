@@ -1,17 +1,18 @@
 from datetime import datetime
 from ghTools.logger import Logger
+from ghTools.model import _Model
 
 
-class Ambient:
+class Climate:
     'Represent data from sensor with temperature and humidity'
 
-    def __init__(self, sensor=0, temperature=100, humidity=0):
+    def __init__(self, sensor=..., temperature=100, humidity=...):
         self.sensor = sensor
         self.date = datetime.now()
         self.temperature = temperature
         self.humidity = humidity
-        # self.logger = Logger.init_logger()
         self.logger = Logger().get_logger()
+        self.model = _Model()
 
     def get_last_items(self, days):
         message = {

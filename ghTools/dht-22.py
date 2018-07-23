@@ -1,8 +1,8 @@
-from ghTools.ambient import Ambient
+from ghTools.climate import Climate
 
 
 class Dht_22():
 
     def __init__(self, id, ambient):
         self.id = id
-        self.ambient = Ambient()
+        self.ambient = Climate()

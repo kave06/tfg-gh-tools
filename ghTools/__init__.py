@@ -1,4 +1,4 @@
-from .ambient import Ambient
+from .climate import Climate
 from .logger import Logger
 from .model import _Model
 from .relay import Relay

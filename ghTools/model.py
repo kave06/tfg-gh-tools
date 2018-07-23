@@ -2,7 +2,7 @@ from pymysql import connect, MySQLError
 from datetime import datetime, timedelta
 
 from ghTools.config import *
-from ghTools.ambient import Ambient
+from ghTools.climate import Climate
 from ghTools.logger import Logger
 
 FORMAT = '%Y-%m-%d %H:%M:%S.%f'
@@ -99,11 +99,11 @@ class _Model:
                     '''.format(id_relay, start, end, liters)
             self.__insert(query)
         # self.logger.debug(query)
-        try:
-            self.cursor.close()
-            self.cnx.close()
-        except MySQLError as err:
-            self.logger.error(err)
+        # try:
+        #     self.cursor.close()
+        #     self.cnx.close()
+        # except MySQLError as err:
+        #     self.logger.error(err)
 
         return collision
 
