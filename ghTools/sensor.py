@@ -25,7 +25,7 @@ class Sensor:
         return self.__model.get_last_humidity(self.id)
 
     def get_last_ambient(self, days) -> list:
-        return self.__model.select_ambient(sensor=self.id, days=days)
+        return self.__model.select_climate(sensor=self.id, days=days)
 
 
         # message = 'get_last_items,{},{}'.format(self.id, days)

@@ -4,13 +4,13 @@ from ghTools.model import _Model
 
 
 class Climate:
-    'Represent data from sensor with temperature and humidity'
+    'Represent data from sensor with temp and humi'
 
     def __init__(self, sensor=..., temperature=100, humidity=...):
         self.sensor = sensor
         self.date = datetime.now()
-        self.temperature = temperature
-        self.humidity = humidity
+        self.temp = temperature
+        self.humi = humidity
         self.logger = Logger().get_logger()
         self.model = _Model()
 
@@ -22,20 +22,17 @@ class Climate:
                 'days': days
             }
         }
-        # message = 'get_last_items,{},{}'.format(self.sensor, days)
-        # ws = create_connection(WS_IP)
-        # ws.send(json.dumps(message))
-        # result = ws.recv()
-        #
-        # for row in result:
-        #     row.print()
+
+    def insert_climate(self):
+        self.model.insert_climate(sensor=self.sensor, date=self.date,
+                                  tempe=self.temp, humi=self.humi)
 
     def serialize(self):
         data_sensor = {
             'sensor': self.sensor,
             'data': {
-                'temp': self.temperature,
-                'humi': self.humidity,
+                'temp': self.temp,
+                'humi': self.humi,
                 'date': self.date
             }
         }
@@ -45,10 +42,10 @@ class Climate:
     def deserialize(self, data_sensor):
         data_sensor = dict(data_sensor)
         self.sensor = data_sensor['sensor']
-        self.temperature = data_sensor['data']['temp']
-        self.humidity = data_sensor['data']['humi']
+        self.temp = data_sensor['data']['temp']
+        self.humi = data_sensor['data']['humi']
         self.date = data_sensor['data']['date']
 
     def print(self):
-        print('sensor:{} date:{} temperature:{} humidity:{}'
-              .format(self.sensor, self.date, self.temperature, self.humidity))
+        print('sensor:{} date:{} temp:{} humi:{}'
+              .format(self.sensor, self.date, self.temp, self.humi))

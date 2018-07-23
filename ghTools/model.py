@@ -62,7 +62,7 @@ class _Model:
             self.cnx.close()
         return rs
 
-    def select_ambient(self, sensor, days) -> list:
+    def select_climate(self, sensor, days) -> list:
         query = """
                 SELECT sensor, date, temp, humi
                 FROM sensor{}_per_hour
@@ -84,6 +84,12 @@ class _Model:
             result_set.append(data_sensor)
 
         return result_set
+
+    def insert_climate(self, sensor, date, tempe, humi):
+        query = '''
+                INSERT INTO ambient_data VALUES ({}, '{}', {}, {})
+                '''.format(sensor, date, tempe, humi)
+        self.__insert(query)
 
     def insert_irrigation(self, id_relay, start: datetime, end: datetime, liters=0) -> bool:
         collision = self.__check_irrigation_collision(id_relay, start=start, end=end)
@@ -183,9 +189,9 @@ if __name__ == "__main__":
     collision_end3 = datetime(2018, 7, 18, 21, 35, 0)
     # model.check_irrigation(start=collision_start1, end=collision_end1)
     # condition = model.check_irrigation(start=collision_start3, end=collision_end3)
-# rs = model.select_ambient(query)
+# rs = model.select_climate(query)
 # print('len of: {}'.format(len(rs)))
 # for ambient in rs:
 #     ambient.print()
-# rs = model.select_ambient(1,1)
+# rs = model.select_climate(1,1)
 # print(rs)
