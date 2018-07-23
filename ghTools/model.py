@@ -44,7 +44,7 @@ class _Model:
         try:
             self.cursor.execute(query=query)
             rs = self.cursor.fetchall()
-            self.logger.debug(rs)
+            # self.logger.debug('result set:{}'.format(rs))
         except MySQLError as err:
             self.logger.error(err)
         # finally:
@@ -76,7 +76,6 @@ class _Model:
         return result_set
 
     def insert_irrigation(self, id_relay, start: datetime, end: datetime, liters=0) -> bool:
-        self.logger.debug('irrigation')
         collision = self.__check_irrigation_collision(id_relay, start=start, end=end)
         self.logger.debug('collision:{}'.format(collision))
         if collision:
@@ -95,10 +94,9 @@ class _Model:
         except MySQLError as err:
             self.logger.error(err)
 
-        return not collision
+        return collision
 
     def __check_irrigation_collision(self, id_relay, start: datetime, end: datetime) -> bool:
-        self.logger.debug('check')
         query = '''
                 SELECT * 
                 FROM irrigation 
@@ -109,7 +107,7 @@ class _Model:
                     ) 
                 '''.format(id_relay, end, start)
         rs = self.select(query=query)
-        self.logger.debug(rs)
+        self.logger.debug('result set:{}'.format(rs))
         if rs:
             return True
         else:
