@@ -18,7 +18,17 @@ class _Model:
         self.passw = password
         self.db = db
         self.logger = Logger().get_logger()
+        self.__my_connect()
 
+        # try:
+        #     self.cnx = connect(host=self.host, port=self.port, user=self.user,
+        #                        password=self.passw, db=self.db)
+        #     self.cursor = self.cnx.cursor()
+        #     self.logger.debug('connected to database')
+        # except MySQLError as err:
+        #     self.logger.error(err)
+
+    def __my_connect(self):
         try:
             self.cnx = connect(host=self.host, port=self.port, user=self.user,
                                password=self.passw, db=self.db)
@@ -27,7 +37,7 @@ class _Model:
         except MySQLError as err:
             self.logger.error(err)
 
-    def insert(self, query: str):
+    def __insert(self, query: str):
         # self.logger.debug(query)
         try:
             self.cursor.execute(query)
@@ -35,11 +45,11 @@ class _Model:
             self.logger.debug('inserted correctly in database')
         except MySQLError as err:
             self.logger.error(err)
-        # finally:
-        #     self.cursor.close()
-        #     self.cnx.close()
+        finally:
+            self.cursor.close()
+            self.cnx.close()
 
-    def select(self, query: str):
+    def __select(self, query: str):
         rs = []
         try:
             self.cursor.execute(query=query)
@@ -47,9 +57,9 @@ class _Model:
             # self.logger.debug('result set:{}'.format(rs))
         except MySQLError as err:
             self.logger.error(err)
-        # finally:
-        #     self.cursor.close()
-        #     self.cnx.close()
+        finally:
+            self.cursor.close()
+            self.cnx.close()
         return rs
 
     def select_ambient(self, sensor, days) -> list:
@@ -59,7 +69,7 @@ class _Model:
                 ORDER BY date DESC 
                 LIMIT {}
                 """.format(sensor, 24 * days)
-        rs = self.select(query)
+        rs = self.__select(query)
         result_set = []
         # self.cursor.execute(query=query)
         for (sensor, date, temp, humi) in rs:
@@ -82,11 +92,12 @@ class _Model:
             self.logger.info('There is irrigation at the same time')
             return collision
         else:
+            self.__my_connect()
             query = '''
                     INSERT INTO irrigation(id_relay, start, end, liters)
                         VALUES ({}, '{}', '{}', {})
                     '''.format(id_relay, start, end, liters)
-            self.insert(query)
+            self.__insert(query)
         # self.logger.debug(query)
         try:
             self.cursor.close()
@@ -106,7 +117,7 @@ class _Model:
                     irrigation.end < '{}'
                     ) 
                 '''.format(id_relay, end, start)
-        rs = self.select(query=query)
+        rs = self.__select(query=query)
         self.logger.debug('result set:{}'.format(rs))
         if rs:
             return True
