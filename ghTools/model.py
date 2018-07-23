@@ -81,6 +81,7 @@ class _Model:
         self.logger.debug('collision:{}'.format(collision))
         if collision:
             self.logger.info('there are irrigaition in the same hours')
+            return collision
         else:
             query = '''
                     INSERT INTO irrigation(id_relay, start, end, liters)

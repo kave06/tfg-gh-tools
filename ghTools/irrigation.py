@@ -29,8 +29,8 @@ class Irrigation():
         self.relay.set_state(state)
         self.logger.debug('state of relay: {}'.format(self.relay.state))
 
-    def insert_irrigation(self):
-        self.model.insert_irrigation(self.relay.id, self.start, self.end, self.liters)
+    def insert_irrigation(self)-> bool:
+        return self.model.insert_irrigation(self.relay.id, self.start, self.end, self.liters)
 
     def add_scheduler(self):
         now = datetime.now()
