@@ -80,7 +80,7 @@ class _Model:
         collision = self.__check_irrigation_collision(id_relay, start=start, end=end)
         self.logger.debug('collision:{}'.format(collision))
         if collision:
-            self.logger.info('there are irrigaition in the same hours')
+            self.logger.info('There is irrigation at the same time')
             return collision
         else:
             query = '''

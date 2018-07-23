@@ -30,7 +30,7 @@ class Irrigation():
         self.logger.debug('state of relay: {}'.format(self.relay.state))
 
     def insert_irrigation(self)-> bool:
-        return self.model.insert_irrigation(self.relay.id, self.start, self.end, self.liters)
+        return not self.model.insert_irrigation(self.relay.id, self.start, self.end, self.liters)
 
     def add_scheduler(self):
         now = datetime.now()
@@ -38,8 +38,8 @@ class Irrigation():
         # start = start.total_seconds()
         # end = (self.end - now).total_seconds()
 
-        self.logger.debug('irrigation start: {}'.format(start))
-        self.logger.debug('irrigation end: {}'.format(end))
+        self.logger.debug('irrigation start: {}'.format(self.start - now))
+        self.logger.debug('irrigation end: {}'.format((self.end - now).total_seconds()))
         s.enter((self.start - now).total_seconds(), 0, self.set_irrigation, argument=('ON',))
         s.enter((self.end - now).total_seconds(), 0, self.set_irrigation, argument=('OFF',))
         s.run()
