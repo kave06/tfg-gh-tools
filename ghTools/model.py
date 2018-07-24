@@ -2,7 +2,6 @@ from pymysql import connect, MySQLError
 from datetime import datetime, timedelta
 
 from ghTools.config import *
-from ghTools.climate import Climate
 from ghTools.logger import Logger
 
 FORMAT = '%Y-%m-%d %H:%M:%S.%f'

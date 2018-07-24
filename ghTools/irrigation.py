@@ -15,7 +15,10 @@ class Irrigation():
 
     def __init__(self, id_relay, start: datetime, end=None, duration=0.0, liters=0):
         self.relay = Relay(id_relay)
-        self.start = start
+        if start is not None:
+            self.start = start
+        else:
+            self.start = datetime.now()
         self.duration = duration
         self.liters = liters
         self.logger = Logger().get_logger()

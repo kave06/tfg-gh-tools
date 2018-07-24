@@ -47,5 +47,6 @@ class Climate:
         self.date = data_sensor['data']['date']
 
     def print(self):
+        format = '%Y-%m-%d %H:%M:%S'
         print('sensor:{} date:{} temp:{} humi:{}'
-              .format(self.sensor, self.date, self.temp, self.humi))
+              .format(self.sensor, self.date.strftime(format), self.temp, self.humi))
