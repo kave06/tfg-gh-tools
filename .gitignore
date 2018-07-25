@@ -12,3 +12,4 @@ basura/
 __pycache__/
 
 ghTools/log/*
+ghTools/config.py
