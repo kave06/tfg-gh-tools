@@ -1,5 +1,3 @@
-# from websocket import create_connection
-
 from ghTools.model import _Model
 
 
@@ -24,14 +22,5 @@ class Sensor:
         '''
         return self.__model.get_last_humidity(self.id)
 
-    def get_last_ambient(self, days) -> list:
+    def get_last_climate(self, days) -> list:
         return self.__model.select_climate(sensor=self.id, days=days)
-
-
-        # message = 'get_last_items,{},{}'.format(self.id, days)
-        # ws = create_connection(WS_IP)
-        # ws.send(message)
-        # result = ws.recv()
-        #
-        # for row in result:
-        #     row.print()

@@ -1,10 +1,18 @@
-import paho.mqtt.publish as publish
-from time import sleep
+import configparser
+from os import path
 
-from ghTools.config import broker_host, broker_port
+import paho.mqtt.publish as publish
+
 from ghTools.logger import Logger
 
-TOPIC = 'greenhouse/relay'
+APP_PATH = path.abspath(__name__)
+APP_PATH = path.split(APP_PATH)
+PATH_CONF = path.join(APP_PATH[0], 'etc/config.ini')
+
+config = configparser.ConfigParser()
+config.read(PATH_CONF)
+
+
 class Relay:
 
     def __init__(self, id, state='OFF'):
@@ -14,15 +22,13 @@ class Relay:
 
     def set_state(self, state):
         self.state = state
-        publish.single(TOPIC + '{}'.format(self.id), payload=self.state,
-                       hostname=broker_host, port=broker_port)
-        self.logger.debug(TOPIC + '{} payload:{} hostname:{} port:{}'
-                          .format(self.id, self.state, broker_host, broker_port))
 
+        publish.single(config.get('mqtt', 'topic_relay') + '{}'.format(self.id),
+                       payload=self.state, hostname=config.get('mqtt', 'host'),
+                       port=config.getint('mqtt', 'port'),
+                       auth={'username': config.get('mqtt', 'user'),
+                             'password': config.get('mqtt', 'passw')})
 
-if __name__ == '__main__':
-    relay = Relay(id=4, state='ON')
-    relay.set_state('ON')
-    sleep(2)
-    # relay.state = 'OFF'
-    relay.set_state('OFF')
+        self.logger.debug(config.get('mqtt', 'host') + '{} payload:{} hostname:{} port:{}'
+                          .format(self.id, self.state, config.get('mqtt', 'host'),
+                                  config.getint('mqtt', 'port')))

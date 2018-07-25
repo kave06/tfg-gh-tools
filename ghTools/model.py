@@ -1,17 +1,23 @@
 from pymysql import connect, MySQLError
 from datetime import datetime, timedelta
-from os import path
+import os.path as path
+import configparser
 
-from ghTools.config import *
 from ghTools.logger import Logger
 
-FORMAT = '%Y-%m-%d %H:%M:%S.%f'
+APP_PATH = path.abspath(__name__)
+APP_PATH = path.split(APP_PATH)
+PATH_CONF = path.join(APP_PATH[0], 'etc/config.ini')
+
+config = configparser.ConfigParser()
+config.read(PATH_CONF)
 
 
 class _Model:
 
-    def __init__(self, host=mysql_host, port=mysql_port, user=mysql_user,
-                 password=mysql_pass, db=mysql_db_name):
+    def __init__(self, host=config.get('mysql', 'host'), port=config.getint('mysql', 'port'),
+                 user=config.get('mysql', 'user'), password=config.get('mysql', 'passw'),
+                 db=config.get('mysql', 'db_name')):
         self.host = host
         self.port = port
         self.user = user
@@ -19,16 +25,6 @@ class _Model:
         self.db = db
         self.logger = Logger().get_logger()
         self.__my_connect()
-
-        # try:
-        #     self.cnx = connect(host=self.host, port=self.port, user=self.user,
-        #                        password=self.passw, db=self.db)
-        #     self.cursor = self.cnx.cursor()
-        #     self.logger.debug('connected to database')
-        # except MySQLError as err:
-        #     self.logger.error(err)
-        self.logger.debug(path.abspath())
-        self.logger.debug(path.basename())
 
     def __my_connect(self):
         try:
@@ -73,7 +69,6 @@ class _Model:
                 """.format(sensor, 24 * days)
         rs = self.__select(query)
         result_set = []
-        # self.cursor.execute(query=query)
         for (sensor, date, temp, humi) in rs:
             data_sensor = {
                 'sensor': sensor,
@@ -106,12 +101,6 @@ class _Model:
                         VALUES ({}, '{}', '{}', {})
                     '''.format(id_relay, start, end, liters)
             self.__insert(query)
-        # self.logger.debug(query)
-        # try:
-        #     self.cursor.close()
-        #     self.cnx.close()
-        # except MySQLError as err:
-        #     self.logger.error(err)
 
         return collision
 
@@ -145,13 +134,10 @@ class _Model:
         else:
             return rs[0][0]
 
-    def insert_liters(self,start:datetime, end:datetime, liters):
+    def insert_liters(self, start: datetime, end: datetime, liters):
         id_irrigation = self.__search_irrigation(
             start - timedelta(minutes=1), end + timedelta(minutes=1))
 
-        # if id_irrigation == -1:
-        #     self.logger.info('liters have not been inserted')
-        # else:
         self.__my_connect()
         query = '''
                 UPDATE irrigation SET liters = {} WHERE id = {}
@@ -216,11 +202,3 @@ if __name__ == "__main__":
     collision_end2 = datetime(2018, 7, 18, 20, 30, 0)
     collision_start3 = datetime(2018, 7, 18, 21, 2, 0)
     collision_end3 = datetime(2018, 7, 18, 21, 35, 0)
-    # model.check_irrigation(start=collision_start1, end=collision_end1)
-    # condition = model.check_irrigation(start=collision_start3, end=collision_end3)
-# rs = model.select_climate(query)
-# print('len of: {}'.format(len(rs)))
-# for ambient in rs:
-#     ambient.print()
-# rs = model.select_climate(1,1)
-# print(rs)
