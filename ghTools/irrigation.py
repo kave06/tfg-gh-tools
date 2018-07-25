@@ -13,12 +13,9 @@ s = sched.scheduler(time.time, time.sleep)
 
 class Irrigation():
 
-    def __init__(self, id_relay, start: datetime, end=None, duration=0.0, liters=0):
+    def __init__(self, id_relay, start: datetime=datetime.now(), end=None, duration=0.0, liters=0):
         self.relay = Relay(id_relay)
-        if start is not None:
-            self.start = start
-        else:
-            self.start = datetime.now()
+        self.start = start
         self.duration = duration
         self.liters = liters
         self.logger = Logger().get_logger()
@@ -47,6 +44,16 @@ class Irrigation():
         s.enter((self.end - now).total_seconds(), 0, self.set_irrigation, argument=('OFF',))
         s.run()
         self.logger.debug('irrigation end')
+
+    # def __search_irrigation(self) -> int:
+    #     id_irrigation = self.model.__search_irrigation\
+    #         (self.start - timedelta(minutes=1), self.end + timedelta(minutes=1))
+    #     return id_irrigation
+
+    def insert_liters(self):
+        # id_irrigation = self.__search_irrigation()
+        self.model.insert_liters(self.start, self.end, self.liters)
+
 
     # def start_irrigation(self):
     #     self.relay.state = 'ON'

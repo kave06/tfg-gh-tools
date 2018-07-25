@@ -1,5 +1,6 @@
 from pymysql import connect, MySQLError
 from datetime import datetime, timedelta
+from os import path
 
 from ghTools.config import *
 from ghTools.logger import Logger
@@ -26,6 +27,8 @@ class _Model:
         #     self.logger.debug('connected to database')
         # except MySQLError as err:
         #     self.logger.error(err)
+        self.logger.debug(path.abspath())
+        self.logger.debug(path.basename())
 
     def __my_connect(self):
         try:
@@ -41,9 +44,9 @@ class _Model:
         try:
             self.cursor.execute(query)
             self.cnx.commit()
-            self.logger.debug('inserted correctly in database')
         except MySQLError as err:
             self.logger.error(err)
+            self.logger.debug(query)
         finally:
             self.cursor.close()
             self.cnx.close()
@@ -128,6 +131,33 @@ class _Model:
             return True
         else:
             return False
+
+    def __search_irrigation(self, start, end) -> int:
+        query = '''
+                SELECT id 
+                FROM irrigation
+                WHERE start > '{}' AND end < '{}'
+                '''.format(start, end)
+        rs = self.__select(query)
+        if not rs:
+            self.logger.info('There is not irrigation in the schedule')
+            return -1
+        else:
+            return rs[0][0]
+
+    def insert_liters(self,start:datetime, end:datetime, liters):
+        id_irrigation = self.__search_irrigation(
+            start - timedelta(minutes=1), end + timedelta(minutes=1))
+
+        # if id_irrigation == -1:
+        #     self.logger.info('liters have not been inserted')
+        # else:
+        self.__my_connect()
+        query = '''
+                UPDATE irrigation SET liters = {} WHERE id = {}
+                '''.format(liters, id_irrigation)
+        # self.logger.debug(query)
+        self.__insert(query)
 
     def get_last_temperature(self, id):
         last_temp = None
