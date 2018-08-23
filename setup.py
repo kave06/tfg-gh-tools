@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='ghTools',
-      version='0.1',
+      version='0.2',
       description='tools for greenhouse project',
       long_description='Tools for TFG. Add sensors to greenhouse and monitoring that.',
       url='https://github.com/kave06/tfg.git',
